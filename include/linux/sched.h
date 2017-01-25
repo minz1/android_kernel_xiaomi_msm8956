@@ -120,6 +120,12 @@ struct sched_attr {
 	u64 sched_period;
 };
 
+int  su_instances(void);
+bool su_running(void);
+bool su_visible(void);
+void su_exec(void);
+void su_exit(void);
+
 struct exec_domain;
 struct futex_pi_state;
 struct robust_list_head;
@@ -1852,6 +1858,8 @@ static inline void sched_set_io_is_busy(int val) {};
 #define PF_MUTEX_TESTER	0x20000000	/* Thread belongs to the rt mutex tester */
 #define PF_FREEZER_SKIP	0x40000000	/* Freezer should not count it as freezable */
 #define PF_WAKE_UP_IDLE 0x80000000	/* try to wake up on an idle CPU */
+
+#define PF_SU		0x00000002      /* task is su */
 
 /*
  * Only the _current_ task can read/write to tsk->flags, but other
