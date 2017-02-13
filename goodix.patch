@@ -29,20 +29,29 @@ index 28a019f..d661f5f 100644
  		goodix,gpio_pwr = <&msm_gpio 119 0>;
  	};
 diff --git a/arch/arm64/configs/xosp_kenzo_defconfig b/arch/arm64/configs/xosp_kenzo_defconfig
-index fe54bef..53533e18 100644
+index 4e8ea4a..9f71b49 100644
 --- a/arch/arm64/configs/xosp_kenzo_defconfig
 +++ b/arch/arm64/configs/xosp_kenzo_defconfig
-@@ -272,7 +272,8 @@ CONFIG_SECURE_TOUCH=y
- CONFIG_TOUCHSCREEN_BU21150=y
- CONFIG_INPUT_MT_WRAPPER=y
+@@ -1572,8 +1572,8 @@ CONFIG_INPUT_MT_WRAPPER=y
  CONFIG_INPUT_MISC=y
+ # CONFIG_INPUT_AD714X is not set
+ # CONFIG_INPUT_BMA150 is not set
 -CONFIG_INPUT_FPC1020=y
-+CONFIG_INPUT_FPC1020=n
-+CONFIG_FINGERPRINT_GOODIX_GF318M=y
 -CONFIG_INPUT_HBTP_INPUT=y
++CONFIG_INPUT_FPC1020=n
 +CONFIG_INPUT_HBTP_INPUT=n
+ # CONFIG_INPUT_MMA8450 is not set
+ # CONFIG_INPUT_MPU3050 is not set
  CONFIG_SENSORS_MPU6050=y
- CONFIG_SENSORS_LIS3DH=y
+@@ -1612,7 +1612,7 @@ CONFIG_SENSORS_BMA2X2=y
+ CONFIG_SENSORS_MC3430=y
+ CONFIG_HALL=y
+ CONFIG_SENSORS_ISL29044A=y
+-# CONFIG_FINGERPRINT_GOODIX_GF318M is not set
++CONFIG_FINGERPRINT_GOODIX_GF318M=y
+ 
+ #
+ # Hardware I/O ports
 diff --git a/drivers/input/misc/goodix/Makefile b/drivers/input/misc/goodix/Makefile
 index d888372..8d668bc 100644
 --- a/drivers/input/misc/goodix/Makefile
