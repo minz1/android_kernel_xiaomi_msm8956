@@ -277,6 +277,7 @@ static long gf_ioctl(struct file *filp, unsigned int cmd, unsigned long arg)
 #ifdef AP_CONTROL_CLK
 	unsigned int speed = 0;
 #endif
+	unsigned int delay = 0;
 
 	pr_warn("GOODIX gf_ioctl start %i\n", cmd);
 
@@ -338,6 +339,13 @@ recurs_l:
 		break;
 	case GF_IOC_RESET:
 		gf_hw_reset(gf_dev, 70);
+		break;
+	case GF_IOC_RESET_NEW:
+		retval = __get_user(delay, (u32 __user *) arg);
+		if (retval == 0)
+			gf_hw_reset(gf_dev, delay);
+		else
+			pr_warn("Failed to get reset delay from user. retval = %d\n", retval);
 		break;
 	case GF_IOC_COOLBOOT:
 		gf_power_off(gf_dev);
