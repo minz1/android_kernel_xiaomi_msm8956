@@ -135,6 +135,10 @@ static bool __cfg80211_unlink_bss(struct cfg80211_registered_device *dev,
 
 	list_del_init(&bss->list);
 	rb_erase(&bss->rbn, &dev->bss_tree);
+	dev->bss_entries--;
+	WARN_ONCE((dev->bss_entries == 0) ^ list_empty(&dev->bss_list),
+		  "rdev bss entries[%d]/list[empty:%d] corruption\n",
+		  dev->bss_entries, list_empty(&dev->bss_list));
 	bss_ref_put(dev, bss);
 	return true;
 }
@@ -622,6 +626,7 @@ static bool cfg80211_combine_bsses(struct cfg80211_registered_device *dev,
 	const u8 *ie;
 	int i, ssidlen;
 	u8 fold = 0;
+	u32 n_entries = 0;
 
 	ies = rcu_access_pointer(new->pub.beacon_ies);
 	if (WARN_ON(!ies))
@@ -645,6 +650,12 @@ static bool cfg80211_combine_bsses(struct cfg80211_registered_device *dev,
 	/* This is the bad part ... */
 
 	list_for_each_entry(bss, &dev->bss_list, list) {
+		/*
+		 * we're iterating all the entries anyway, so take the
+		 * opportunity to validate the list length accounting
+		 */
+		n_entries++;
+
 		if (!ether_addr_equal(bss->pub.bssid, new->pub.bssid))
 			continue;
 		if (bss->pub.channel != new->pub.channel)
@@ -673,6 +684,10 @@ static bool cfg80211_combine_bsses(struct cfg80211_registered_device *dev,
 		rcu_assign_pointer(bss->pub.beacon_ies,
 				   new->pub.beacon_ies);
 	}
+
+	WARN_ONCE(n_entries != dev->bss_entries,
+		  "rdev bss entries[%d]/list[len:%d] corruption\n",
+		  dev->bss_entries, n_entries);
 
 	return true;
 }
@@ -819,6 +834,7 @@ cfg80211_bss_update(struct cfg80211_registered_device *dev,
 		}
 
 		list_add_tail(&new->list, &dev->bss_list);
+		dev->bss_entries++;
 		rb_insert_bss(dev, new);
 		found = new;
 	}
