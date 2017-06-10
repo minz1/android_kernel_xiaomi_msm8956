@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2012-2016 The Linux Foundation. All rights reserved.
+ * Copyright (c) 2012-2017 The Linux Foundation. All rights reserved.
  *
  * Previously licensed under the ISC license by Qualcomm Atheros, Inc.
  *
@@ -207,11 +207,7 @@ static VOS_STATUS hdd_parse_ese_beacon_req(tANI_U8 *pValue,
 #define NUM_OF_STA_DATA_TO_PRINT 16
 
 #ifdef WLAN_FEATURE_RMC
-#ifdef CONFIG_MACH_XIAOMI_KENZO
-#define WLAN_NLINK_CESIUM 29
-#else
 #define WLAN_NLINK_CESIUM 30
-#endif
 #endif
 
 //wait time for beacon miss rate.
@@ -10667,6 +10663,8 @@ void hdd_wlan_exit(hdd_context_t *pHddCtx)
                  vos_timer_getCurrentState(&pHddCtx->tdls_source_timer)) {
        vos_timer_stop(&pHddCtx->tdls_source_timer);
    }
+
+   vos_set_snoc_high_freq_voting(false);
 
    vos_timer_destroy(&pHddCtx->tdls_source_timer);
 
